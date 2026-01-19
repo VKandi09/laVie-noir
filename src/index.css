@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.nav-item {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #a855f7, #22d3ee);
+  transition: width 0.3s ease;
+}
+
+.nav-item:hover {
+  color: white;
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
