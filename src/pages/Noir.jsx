@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 import noirHero from "/images/noir-hero.jpg";
 import cocktail1 from "/images/cocktail1.jpg";
@@ -6,6 +7,8 @@ import cocktail2 from "/images/cocktail2.jpg";
 import cocktail3 from "/images/cocktail3.jpg";
 
 export default function Noir() {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-black text-white">
 
@@ -139,9 +142,10 @@ export default function Noir() {
         </motion.h2>
 
         <motion.button
+          onClick={() => navigate("/contact")}
           whileHover={{ scale: 1.12 }}
           whileTap={{ scale: 0.95 }}
-          className="mt-6 px-10 py-4 border border-teal-300 rounded-full text-white backdrop-blur-md hover:bg-teal-300/10 transition"
+          className="mt-6 px-10 py-4 border border-teal-300 rounded-full text-white backdrop-blur-md hover:bg-teal-300/10 transition cursor-pointer"
         >
           Book a Table
         </motion.button>

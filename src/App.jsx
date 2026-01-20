@@ -4,14 +4,13 @@ import { AnimatePresence } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Events from "./components/Events";
-
-// import Locations from "./components/Locations";
-// import Gallery from "./components/Gallery";
 import Footer from "./components/Footer";
 
 import LaVie from "./pages/LaVie";
 import Noir from "./pages/Noir";
 import Contact from "./pages/Contact";
+import Gallery from "./pages/Gallery";
+import VIP from "./pages/VIP";
 
 export default function App() {
   const location = useLocation();
@@ -39,6 +38,12 @@ export default function App() {
 
           {/* NOIR */}
           <Route path="/noir" element={<Noir />} />
+
+          {/* Gallery Page */}
+          <Route path="/gallery" element={<Gallery />} />
+
+          {/* VIP Page */}
+          <Route path="/vip" element={<VIP />} />
 
           {/* Contact Page */}
           <Route path="/contact" element={<Contact />} />

@@ -23,21 +23,22 @@ export default function Contact() {
             <h3 className="text-xl font-semibold mb-2">📍 Locations</h3>
             <p className="text-gray-300">
               La Vie Night Club <br />
-              Noir Bar & Lounge
+              Noir Bar & Lounge <br/><br/>
+              1 Ryan Alley, <br/> Rochester, NY 14607
             </p>
           </div>
 
           <div className="glass p-8 rounded-xl hover:scale-105 transition">
             <h3 className="text-xl font-semibold mb-2">📞 Phone</h3>
             <p className="text-gray-300">
-              +1 (585) 000-0000
+              +1 (917) 361-3854
             </p>
           </div>
 
           <div className="glass p-8 rounded-xl hover:scale-105 transition">
             <h3 className="text-xl font-semibold mb-2">✉️ Email</h3>
             <p className="text-gray-300">
-              reservations@lavienoir.com
+              hmnyc2024@gmail.com
             </p>
           </div>
         </div>

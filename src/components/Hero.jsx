@@ -7,7 +7,7 @@ export default function Hero() {
   const navigate = useNavigate();
 
   return (
-    <section className="h-screen flex flex-col md:flex-row overflow-hidden">
+    <section className="h-screen flex flex-col md:flex-row overflow-hidden relative z-0">
       {/* LA VIE NIGHT CLUB */}
       <motion.div
         onClick={() => navigate("/la-vie")}
@@ -55,7 +55,7 @@ export default function Hero() {
               e.stopPropagation();
               navigate("/la-vie");
             }}
-            className="mt-8 px-10 py-4 border border-purple-400 text-white rounded-full backdrop-blur-md"
+            className="mt-8 px-10 py-4 border border-purple-400 text-white rounded-full backdrop-blur-md cursor-pointer"
           >
             Explore Night Club
           </motion.button>
@@ -108,7 +108,7 @@ export default function Hero() {
               e.stopPropagation();
               navigate("/noir");
             }}
-            className="mt-8 px-10 py-4 border border-teal-300 text-white rounded-full backdrop-blur-md"
+            className="mt-8 px-10 py-4 border border-teal-300 text-white rounded-full backdrop-blur-md cursor-pointer"
           >
             Explore Bar & Lounge
           </motion.button>

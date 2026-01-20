@@ -1,11 +1,28 @@
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    --font-sans: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #000;
+    color: #e5e7eb;
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: 0.08em;
+  }
+}
+
 .glass {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
+
 .nav-item {
   position: relative;
   transition: color 0.3s ease;
@@ -18,7 +35,7 @@
   bottom: -6px;
   width: 0%;
   height: 2px;
-  background: linear-gradient(90deg, #a855f7, #22d3ee);
+  background: linear-gradient(90deg, #6f39a1, #1b663e);
   transition: width 0.3s ease;
 }
 
