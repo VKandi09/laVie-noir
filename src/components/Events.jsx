@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import { nav } from "framer-motion/client";
 
 gsap.registerPlugin(ScrollTrigger);
 
