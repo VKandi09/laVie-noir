@@ -167,9 +167,9 @@ export default function VIP() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen pt-28 pb-20 px-6 md:px-12 bg-black flex items-center justify-center"
+      className="min-h-screen pt-28 pb-20 px-4 md:px-12 bg-black flex items-center justify-center"
     >
-      <div className="max-w-5xl w-full glass rounded-3xl p-12 md:p-16 relative overflow-hidden">
+      <div className="max-w-5xl w-full glass rounded-3xl p-8 md:p-16 relative overflow-hidden">
         {/* Ambient Glow */}
         <div className="absolute inset-0 bg-linear-to-br from-purple-600/20 via-transparent to-teal-500/20 blur-3xl" />
 
@@ -178,9 +178,9 @@ export default function VIP() {
           <motion.h1
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-5xl md:text-6xl font-extrabold tracking-widest text-neon text-center"
+            className="text-4xl md:text-6xl font-extrabold tracking-widest text-neon text-center"
           >
-            VIP NOTIFY LIST
+            VIP Reservations
           </motion.h1>
 
           <p className="mt-6 text-gray-400 text-center max-w-2xl mx-auto">
@@ -199,14 +199,14 @@ export default function VIP() {
               <input
                 required
                 placeholder="First Name"
-                className="glass px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
+                className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
               {/* Last Name */}
               <input
                 required
                 placeholder="Last Name"
-                className="glass px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
+                className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
               {/* Email */}
@@ -214,14 +214,14 @@ export default function VIP() {
                 required
                 type="email"
                 placeholder="Email Address"
-                className="glass px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
+                className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
               {/* Phone */}
               <input
                 type="tel"
                 placeholder="Phone (Optional)"
-                className="glass px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
+                className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
               {/* Location */}
@@ -252,7 +252,7 @@ export default function VIP() {
                 <option>Private Event</option>
               </select> */}
               <FormDropdown
-               className="glass px-6 py-4 rounded-xl bg-black text-white outline-none md:col-span-2"
+               className="glass px-4 md:px-6 py-4 rounded-xl bg-black text-white outline-none md:col-span-2"
                 label="Interested In"
                 placeholder="Select Experience"
                 value={interest}
@@ -264,7 +264,7 @@ export default function VIP() {
               <textarea
                 rows="4"
                 placeholder="Anything we should know?"
-                className="glass px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400 md:col-span-2"
+                className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400 md:col-span-2"
               />
 
               {/* Submit */}

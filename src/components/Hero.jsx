@@ -7,7 +7,7 @@ export default function Hero() {
   const navigate = useNavigate();
 
   return (
-    <section className="h-screen flex flex-col md:flex-row overflow-hidden relative z-0">
+    <section className="pt-15 md:pt-0 h-screen flex flex-col md:flex-row overflow-hidden relative z-0">
       {/* LA VIE NIGHT CLUB */}
       <motion.div
         onClick={() => navigate("/la-vie")}

@@ -13,7 +13,7 @@ export default function Footer() {
     : "LA VIE - NOIR";
 
   return (
-    <footer className="bg-black/80 backdrop-blur-md border-t border-white/10 text-gray-400">
+    <footer className="bg-black/80 backdrop-blur-md border-t border-white/10 text-gray-400 text-center md:text-start">
       <div className="max-w-7xl mx-auto px-6 py-14 grid gap-10 md:grid-cols-3">
         {/* Brand */}
         <div>
