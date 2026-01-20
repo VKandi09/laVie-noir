@@ -57,7 +57,7 @@ export default function Footer() {
         </div>
 
         {/* Contact */}
-        <div>
+        <div className="">
           <h3 className="text-white font-semibold mb-4">Visit Us</h3>
           <p className="text-sm">
             1 Ryan Alley
@@ -67,7 +67,7 @@ export default function Footer() {
           <p className="mt-2 text-sm">Fri – Sun • 9PM – 3AM</p>
 
           {/* Social Icons */}
-          <div className="flex gap-4 mt-5 text-xl">
+          <div className="flex gap-4 mt-5 text-xl text-center justify-center md:justify-start">
             <FaInstagram className="hover:text-white cursor-pointer transition" />
             <FaFacebookF className="hover:text-white cursor-pointer transition" />
             <FaXTwitter className="hover:text-white cursor-pointer transition" />
