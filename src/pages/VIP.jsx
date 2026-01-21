@@ -152,13 +152,39 @@ import FormDropdown from "../components/FormDropdown";
 export default function VIP() {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
-  const [location, setLocation] = useState("");
-  const [interest, setInterest] = useState("");
+  // const [location, setLocation] = useState("");
+  // const [interest, setInterest] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    location: "",
+    interest: "",
+    message: "",
+  });
 
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/vip", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit VIP request");
+      }
+
+      setSubmitted(true); // show success UI
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -199,6 +225,10 @@ export default function VIP() {
               <input
                 required
                 placeholder="First Name"
+                value={formData.firstName}
+                onChange={(e) =>
+                  setFormData({ ...formData, firstName: e.target.value })
+                }
                 className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
@@ -206,6 +236,10 @@ export default function VIP() {
               <input
                 required
                 placeholder="Last Name"
+                value={formData.lastName}
+                onChange={(e) =>
+                  setFormData({ ...formData, lastName: e.target.value })
+                }
                 className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
@@ -214,6 +248,10 @@ export default function VIP() {
                 required
                 type="email"
                 placeholder="Email Address"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
@@ -221,6 +259,10 @@ export default function VIP() {
               <input
                 type="tel"
                 placeholder="Phone (Optional)"
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
                 className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
 
@@ -236,8 +278,10 @@ export default function VIP() {
               <FormDropdown
                 label="Preferred Location"
                 placeholder="Select Location"
-                value={location}
-                onChange={setLocation}
+                value={formData.location}
+                onChange={(value) =>
+                  setFormData({ ...formData, location: value })
+                }
                 options={["La Vie Night Club", "Noir Bar & Lounge"]}
               />
 
@@ -252,11 +296,13 @@ export default function VIP() {
                 <option>Private Event</option>
               </select> */}
               <FormDropdown
-               className="glass px-4 md:px-6 py-4 rounded-xl bg-black text-white outline-none md:col-span-2"
+                className="glass px-4 md:px-6 py-4 rounded-xl bg-black text-white outline-none md:col-span-2"
                 label="Interested In"
                 placeholder="Select Experience"
-                value={interest}
-                onChange={setInterest}
+                value={formData.interest}
+                onChange={(value) =>
+                  setFormData({ ...formData, interest: value })
+                }
                 options={["VIP Table", "Bottle Service", "Private Event"]}
               />
 
@@ -264,6 +310,10 @@ export default function VIP() {
               <textarea
                 rows="4"
                 placeholder="Anything we should know?"
+                value={formData.message}
+                onChange={(e) =>
+                  setFormData({ ...formData, message: e.target.value })
+                }
                 className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400 md:col-span-2"
               />
 
