@@ -45,7 +45,7 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ duration: 0.25 }}
-                className="absolute top-10 left-0 bg-black/90 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-xl w-40"
+                className="absolute top-10 left-0 bg-black backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-xl w-40"
               >
                 <li
                   onClick={() => navigate("/la-vie")}
