@@ -13,21 +13,21 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside className="w-64 bg-zinc-900 p-6">
         <h2 className="text-xl font-bold text-neon mb-8 mt-15">
-          La Vie Noir Admin
+          Admin
         </h2>
 
         <nav className="space-y-4">
-          <Link to="/admin" className="block hover:text-neon">
+          <Link to="/admin" className="block hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon">
             Dashboard
           </Link>
-          <Link to="/admin/vip" className="block hover:text-neon">
-            VIP Reservations
+          <Link to="/admin/vip" className="block hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon">
+            Manage VIP Reservations
           </Link>
         </nav>
 
         <button
           onClick={logout}
-          className="mt-10 text-red-400 hover:text-red-300"
+          className="mt-10 block text-red-400 hover:bg-red-500/20 px-3 py-2 rounded hover:text-neon cursor-pointer"
         >
           Logout
         </button>

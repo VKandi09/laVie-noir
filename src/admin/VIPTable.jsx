@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export default function VIPTable() {
   const [vips, setVips] = useState([]);
-//   const [stats, setStats] = useState(null);
+  const [loadingId, setLoadingId] = useState(null);
   const token = localStorage.getItem("adminToken");
 
   useEffect(() => {
@@ -16,9 +16,18 @@ export default function VIPTable() {
       setVips(data.recent || []);
     })
     .catch(err => console.error(err));
-  }, []);
+  }, [token]);
+
+//   const confirmedVIPs = useMemo(
+//     () => vips.filter((v) => v.status === 'confirmed'), 
+//     [vips]
+//   );
 
   const updateStatus = async (id, status) => {
+    setLoadingId(id);
+    setVips((prev) => 
+        prev.map((v) => v._id === id ? { ...v, status} : v)
+    );
     try {
         const res = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/api/vip/${id}/status`,
@@ -38,12 +47,21 @@ export default function VIPTable() {
     );
     } catch (error) {
         alert("Failed to update status:", error);
+        setVips((prev) =>
+            prev.map((v) =>
+                v._id === id
+                ? { ...v, status: v.status } // revert
+                : v
+            )
+        );
+    } finally {
+        setLoadingId(null);
     }
   };
 
   return (
     <div className="mt-15">
-      <h1 className="text-3xl font-bold mb-6">VIP Reservations</h1>
+      <h1 className="text-3xl font-bold mb-6">Manage VIP Reservations</h1>
 
       <table className="w-full border border-white/10">
         <thead>
@@ -66,11 +84,12 @@ export default function VIPTable() {
               <td>{vip.interest}</td>
               <td>
                 <select
-                  value={vip.status}
-                  onChange={(e) =>
-                    updateStatus(vip._id, e.target.value)
-                  }
-                  className="bg-black border border-white/20 rounded px-2 py-1"
+                    disabled={loadingId === vip._id}
+                    value={vip.status}
+                    onChange={(e) =>
+                        updateStatus(vip._id, e.target.value)
+                    }
+                    className={`bg-black border border-white/20 rounded px-2 py-1 ${loadingId === vip._id ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <option value="pending">Pending</option>
                   <option value="confirmed">Confirmed</option>
