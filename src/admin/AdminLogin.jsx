@@ -58,7 +58,7 @@ export default function AdminLogin() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className="w-full py-3 bg-neon text-black rounded font-bold">
+        <button className="w-full py-3 bg-neon text-white rounded border-2 font-bold cursor-pointer hover:text-gray-400 transition">
           LOGIN
         </button>
       </form>

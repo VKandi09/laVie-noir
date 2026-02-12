@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { adminFetch } from "../utils/adminFetch.js";
 
 export default function VIPTable() {
   const [vips, setVips] = useState([]);
@@ -6,17 +7,13 @@ export default function VIPTable() {
   const token = localStorage.getItem("adminToken");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/vip`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    adminFetch(`${import.meta.env.VITE_API_BASE_URL}/api/vip`)
     .then((res) => res.json())
     .then((data) => {
       setVips(data.recent || []);
     })
-    .catch(err => console.error(err));
-  }, [token]);
+    .catch();
+  }, []);
 
 //   const confirmedVIPs = useMemo(
 //     () => vips.filter((v) => v.status === 'confirmed'), 

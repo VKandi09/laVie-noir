@@ -1,29 +1,39 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    total: 0,
-    pending: 0,
-    confirmed: 0,
-    declined: 0,
-    recent: []
- });
+  const navigate = useNavigate();
+  const [stats, setStats] = useState(null);
   const token = localStorage.getItem("adminToken");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/vip/stats`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-    })
-    .then(res => {
-      if (!res.ok) throw new Error("Unauthorized");
-      return res.json();
-    })
-    .then(data => setStats(data))
-    .catch(err => console.error(err));
-  }, []);
+    const loadStats = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/vip/stats`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (res.status === 401) {
+          localStorage.removeItem("adminToken");
+          navigate("/admin/login", { replace: true });
+          return;
+        }
+
+        const data = await res.json();
+        setStats(data);
+      } catch (err) {
+        console.error("Dashboard error:", err);
+      }
+    };
+
+    loadStats();
+  }, [navigate, token]);
 
   if (!stats) {
     return <p className="text-gray-400 mt-20">Loading dashboard…</p>;

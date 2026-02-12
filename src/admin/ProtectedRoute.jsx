@@ -1,6 +1,13 @@
 import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { AdminAuthContext } from "./AdminAuthContext";
 
 export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("adminToken");
-  return token ? children : <Navigate to="/admin/login" />;
+    const context = useContext(AdminAuthContext);
+    if (!context) {
+        return <Navigate to="/admin/login" replace />;
+    }
+    const { isAuthenticated } = context;
+    return isAuthenticated ? children : <Navigate to="/admin/login" replace />;
+
 }
