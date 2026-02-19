@@ -23,6 +23,9 @@ export default function AdminLayout() {
           <Link to="/admin/vip" className="block hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon">
             Manage VIP Reservations
           </Link>
+          <Link to="/admin/reservations" className="block hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon">
+            Manage General Reservations
+          </Link>
         </nav>
 
         <button

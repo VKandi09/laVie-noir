@@ -86,7 +86,15 @@ export default function VIPTable() {
                     onChange={(e) =>
                         updateStatus(vip._id, e.target.value)
                     }
-                    className={`bg-black border border-white/20 rounded px-2 py-1 ${loadingId === vip._id ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`bg-black border border-white/20 rounded px-2 py-1 
+                      ${loadingId === vip._id ? "opacity-50 cursor-not-allowed" : ""}
+                      ${
+                        vip.status === "confirmed"
+                          ? "text-green-400"
+                          : vip.status === "declined"
+                          ? "text-red-400"
+                          : "text-yellow-400"
+                      }`}
                 >
                   <option value="pending">Pending</option>
                   <option value="confirmed">Confirmed</option>

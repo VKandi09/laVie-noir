@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 
 export default function FormDropdown({
   label,
@@ -29,7 +30,11 @@ export default function FormDropdown({
         <span className={value ? "text-white" : "text-gray-400"}>
           {value || placeholder}
         </span>
-        <span className="text-xs">▼</span>
+        <ChevronDown
+          className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300"
+          size={20}
+        />
+        {/* <span className="text-xs">▼</span> */}
       </div>
 
       {/* Dropdown */}

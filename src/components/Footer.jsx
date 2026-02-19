@@ -52,7 +52,7 @@ export default function Footer() {
             <li onClick={() => navigate('/la-vie')} className="hover:text-white cursor-pointer">La Vie</li>
             <li onClick={() => navigate('/noir')} className="hover:text-white cursor-pointer">Noir</li>
             <li onClick={() => navigate('/gallery')} className="hover:text-white cursor-pointer">Gallery</li>
-            <li onClick={() => navigate('/contact')}className="hover:text-white cursor-pointer">Reservations</li>
+            <li onClick={() => navigate('/reservations')}className="hover:text-white cursor-pointer">Reservations</li>
           </ul>
         </div>
 

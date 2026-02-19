@@ -77,6 +77,12 @@ export default function Navbar() {
         >
           Events
         </li>
+        <li
+          onClick={() => navigate("/reservations")}
+          className="relative cursor-pointer nav-item"
+        >
+          Table Reservation
+        </li>
 
         <li
           onClick={() => navigate("/gallery")}

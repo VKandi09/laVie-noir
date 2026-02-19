@@ -12,11 +12,14 @@ import Contact from "./pages/Contact";
 import Gallery from "./pages/Gallery";
 import VIP from "./pages/VIP";
 import VIPReservation from "./pages/VIPReservation";
+import Reservations from "./pages/Reservations";
+
 import AdminLogin from "./admin/AdminLogin";
 import AdminLayout from "./admin/AdminLayout";
 import ProtectedRoute from "./admin/ProtectedRoute";
 import Dashboard from "./admin/Dashboard";
 import VIPTable from "./admin/VIPTable";
+import ReservationsTable from "./admin/ReservationsTable";
 
 export default function App() {
   const location = useLocation();
@@ -53,6 +56,9 @@ export default function App() {
 
           {/* VIP Reservations Page */}
           <Route path="/vip-reservation" element={<VIPReservation />} />
+          
+          {/* General Reservations Page */}
+          <Route path="/reservations" element={<Reservations />} />
 
           {/* Contact Page */}
           <Route path="/contact" element={<Contact />} />
@@ -70,6 +76,7 @@ export default function App() {
           >
             <Route index element={<Dashboard />} />
             <Route path="vip" element={<VIPTable />} />
+            <Route path="reservations" element={<ReservationsTable />} />
           </Route>
         </Routes>
       </AnimatePresence>
