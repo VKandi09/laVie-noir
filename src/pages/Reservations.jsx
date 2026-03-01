@@ -39,9 +39,15 @@ export default function Reservations() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!form.reservationDate || !form.reservationTime) {
+      alert("Please select date and time");
+      return;
+    }
+
     const payload = {
       ...form,
-      reservationDate: format(form.reservationDate, "MM/DD/YYYY"),
+      reservationDate: format(form.reservationDate, "MM/dd/yyyy"),
+      partySize: Number(form.partySize),
     };
 
     const res = await fetch(
@@ -49,12 +55,15 @@ export default function Reservations() {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       }
     );
+    const data = await res.json();
 
     if (res.ok) {
       setSuccess(true);
+    } else {
+      alert(data.message || "Reservation failed");
     }
   };
 
@@ -64,9 +73,9 @@ export default function Reservations() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen pt-28 pb-20 px-4 md:px-12 bg-black flex items-center justify-center"
+      className="min-h-screen pt-28 pb-20 px-4 md:px-12 bg-black"
     >
-      <div className="max-w-5xl w-full glass rounded-3xl p-8 md:p-16 relative overflow-hidden">
+      <div className="max-w-5xl w-full glass rounded-3xl p-8 md:p-16 relative overflow-hidden mx-auto">
         {/* Ambient Glow */}
         <div className="absolute inset-0 bg-linear-to-br from-purple-600/20 via-transparent to-teal-500/20 blur-3xl" />
 
