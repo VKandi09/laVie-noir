@@ -7,6 +7,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [locationsOpen, setLocationsOpen] = useState(false);
+  const [reservationsOpen, setReservationsOpen] = useState(false);
 
   // Lock scroll when mobile menu is open
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function Navbar() {
 
       {/* DESKTOP LINKS */}
       <ul className="hidden md:flex gap-8 text-lg text-gray-300 items-center">
+
         {/* Locations Dropdown */}
         <li
           className="relative cursor-pointer nav-item"
@@ -49,13 +51,13 @@ export default function Navbar() {
               >
                 <li
                   onClick={() => navigate("/la-vie")}
-                  className="px-4 py-3 hover:bg-purple-500/20 text-white transition"
+                  className="px-4 py-3 hover:bg-purple-500/20 text-white transition cursor-pointer"
                 >
                   La Vie
                 </li>
                 <li
                   onClick={() => navigate("/noir")}
-                  className="px-4 py-3 hover:bg-teal-500/20 text-white transition"
+                  className="px-4 py-3 hover:bg-teal-500/20 text-white transition cursor-pointer"
                 >
                   Noir
                 </li>
@@ -64,6 +66,7 @@ export default function Navbar() {
           </AnimatePresence>
         </li>
 
+        {/* Events */}
         <li
           onClick={() => {
             navigate("/");
@@ -77,11 +80,39 @@ export default function Navbar() {
         >
           Events
         </li>
+
+        {/* Reservations Dropdown */}
         <li
-          onClick={() => navigate("/reservations")}
           className="relative cursor-pointer nav-item"
+          onMouseEnter={() => setReservationsOpen(true)}
+          onMouseLeave={() => setReservationsOpen(false)}
         >
-          Table Reservation
+          <span className="flex items-center gap-1">Reservations</span>
+
+          <AnimatePresence>
+            {reservationsOpen && (
+              <motion.ul
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.25 }}
+                className="absolute top-10 left-0 bg-black backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-xl w-55"
+              >
+                <li
+                  onClick={() => navigate("/reservations")}
+                  className="px-4 py-3 hover:bg-purple-500/20 text-white transition cursor-pointer"
+                >
+                  Table Reservation
+                </li>
+                <li
+                  onClick={() => navigate("/vip")}
+                  className="px-4 py-3 hover:bg-teal-500/20 text-white transition cursor-pointer"
+                >
+                  VIP
+                </li>
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </li>
 
         <li
@@ -89,13 +120,6 @@ export default function Navbar() {
           className="relative cursor-pointer nav-item"
         >
           Gallery
-        </li>
-
-        <li
-          onClick={() => navigate("/vip")}
-          className="relative cursor-pointer nav-item"
-        >
-          VIP
         </li>
 
         <li
@@ -135,7 +159,7 @@ export default function Navbar() {
             <div className="relative w-full flex flex-col items-center">
               <button
                 onClick={() => setLocationsOpen(!locationsOpen)}
-                className="text-lg font-semibold px-6 py-3 border border-white/20 rounded-full hover:bg-white/10 transition"
+                className="text-lg font-semibold px-6 py-3 border border-white/20 rounded-full hover:bg-white/10 transition cursor-pointer"
               >
                 Locations
               </button>
@@ -174,8 +198,51 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
+            {/* Reservations Dropdown */}
+            <div className="relative w-full flex flex-col items-center">
+              <button
+                onClick={() => setReservationsOpen(!reservationsOpen)}
+                className="text-lg font-semibold px-6 py-3 border border-white/20 rounded-full hover:bg-white/10 transition cursor-pointer"
+              >
+                Reservations
+              </button>
+
+              <AnimatePresence>
+                {reservationsOpen && (
+                  <motion.ul
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.25 }}
+                    className="mt-3 bg-black/95 border border-white/10 rounded-xl overflow-hidden w-48 flex flex-col items-center"
+                  >
+                    <li
+                      onClick={() => {
+                        navigate("/reservations");
+                        setMenuOpen(false);
+                        setReservationsOpen(false);
+                      }}
+                      className="px-4 py-3 hover:bg-purple-500/20 text-white w-full text-center cursor-pointer transition"
+                    >
+                      Table Reservation
+                    </li>
+                    <li
+                      onClick={() => {
+                        navigate("/vip");
+                        setMenuOpen(false);
+                        setReservationsOpen(false);
+                      }}
+                      className="px-4 py-3 hover:bg-teal-500/20 text-white w-full text-center cursor-pointer transition"
+                    >
+                      VIP
+                    </li>
+                  </motion.ul>
+                )}
+              </AnimatePresence>
+            </div>
+
             {/* Other Menu Items */}
-            {["Events", "Gallery", "VIP", "Contact"].map((item) => (
+            {["Events", "Gallery", "Contact"].map((item) => (
               <button
                 key={item}
                 onClick={() => {
@@ -191,7 +258,7 @@ export default function Navbar() {
                   }
                   setMenuOpen(false);
                 }}
-                className="text-lg font-medium px-6 py-3 rounded-full hover:bg-white/10 transition"
+                className="text-lg font-medium px-6 py-3 rounded-full hover:bg-white/10 transition cursor-pointer"
               >
                 {item}
               </button>

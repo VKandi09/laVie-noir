@@ -13,6 +13,7 @@ import Gallery from "./pages/Gallery";
 import VIP from "./pages/VIP";
 import VIPReservation from "./pages/VIPReservation";
 import Reservations from "./pages/Reservations";
+import EventDetail from "./pages/EventDetail";
 
 import AdminLogin from "./admin/AdminLogin";
 import AdminLayout from "./admin/AdminLayout";
@@ -59,6 +60,9 @@ export default function App() {
           
           {/* General Reservations Page */}
           <Route path="/reservations" element={<Reservations />} />
+
+          {/* Event Detail Page */}
+          <Route path="/events/:id" element={<EventDetail />} />
 
           {/* Contact Page */}
           <Route path="/contact" element={<Contact />} />
