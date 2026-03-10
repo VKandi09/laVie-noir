@@ -2,16 +2,8 @@ import { useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
-export default function AdminLayout() {
-  const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const logout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/admin/login");
-  };
-
-  const NavLinks = ({ onClick }) => (
+function NavLinks({ onClick, onLogout }) {
+  return (
     <>
       <Link
         to="/admin"
@@ -35,13 +27,23 @@ export default function AdminLayout() {
         Manage General Reservations
       </Link>
       <button
-        onClick={() => { logout(); onClick?.(); }}
+        onClick={() => { onLogout(); onClick?.(); }}
         className="mt-6 block text-red-400 hover:bg-red-500/20 px-3 py-2 rounded hover:text-neon cursor-pointer w-full text-left"
       >
         Logout
       </button>
     </>
   );
+}
+
+export default function AdminLayout() {
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const logout = () => {
+    localStorage.removeItem("adminToken");
+    navigate("/admin/login");
+  };
 
   return (
     <div className="min-h-screen flex bg-black text-white">
@@ -49,7 +51,7 @@ export default function AdminLayout() {
       <aside className="hidden md:block w-64 bg-zinc-900 p-6 shrink-0">
         <h2 className="text-xl font-bold text-neon mb-8 mt-15">Admin</h2>
         <nav className="space-y-4">
-          <NavLinks />
+          <NavLinks onLogout={logout} />
         </nav>
       </aside>
 
@@ -75,7 +77,7 @@ export default function AdminLayout() {
         </button>
         <h2 className="text-xl font-bold text-neon mb-8 mt-10">Admin</h2>
         <nav className="space-y-4">
-          <NavLinks onClick={() => setSidebarOpen(false)} />
+          <NavLinks onLogout={logout} onClick={() => setSidebarOpen(false)} />
         </nav>
       </aside>
 

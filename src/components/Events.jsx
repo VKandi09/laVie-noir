@@ -89,7 +89,7 @@ export default function Events() {
                 <Clock size={13} className="text-gray-500 shrink-0" />
                 {event.date}
               </div>
-              <div className="text-sm text-gray-400 pl-[18px] mb-4">
+              <div className="text-sm text-gray-400 pl-4.5 mb-4">
                 {event.time}
               </div>
 
