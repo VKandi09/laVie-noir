@@ -50,7 +50,7 @@ export default function Events() {
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
               {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
               {/* Location badge */}
               <span className="absolute top-3 left-3 flex items-center gap-1 bg-black/60 backdrop-blur-sm border border-white/20 text-xs text-white px-2.5 py-1 rounded-full">

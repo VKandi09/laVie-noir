@@ -87,6 +87,7 @@ export default function ReservationsTable() {
       lastName: r.lastName,
       email: r.email,
       phone: r.phone,
+      location: r.location || "",
       reservationDate: toDateInput(r.reservationDateTime),
       reservationTime: toTimeSlot(r.reservationDateTime),
       partySize: r.partySize,
@@ -164,6 +165,7 @@ export default function ReservationsTable() {
               <tr className="text-left bg-zinc-900 text-sm uppercase tracking-wider">
                 <th className="p-4">Guest</th>
                 <th className="p-4">Email</th>
+                <th className="p-4">Location</th>
                 <th className="p-4">Date & Time</th>
                 <th className="p-4">Party</th>
                 <th className="p-4">Status</th>
@@ -180,6 +182,7 @@ export default function ReservationsTable() {
                     {r.firstName} {r.lastName}
                   </td>
                   <td className="p-4 text-gray-300">{r.email}</td>
+                  <td className="p-4 text-gray-300">{r.location || "—"}</td>
                   <td className="p-4">{formatDate(r.reservationDateTime)}</td>
                   <td className="p-4">{r.partySize}</td>
                   <td className="p-4">
@@ -283,6 +286,21 @@ export default function ReservationsTable() {
                   }
                   className={inputClass}
                 />
+              )}
+
+              {field(
+                "Location",
+                <select
+                  value={editForm.location}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, location: e.target.value })
+                  }
+                  className={inputClass}
+                >
+                  <option value="">Select Location</option>
+                  <option value="La Vie Night Club">La Vie Night Club</option>
+                  <option value="Noir Bar & Lounge">Noir Bar &amp; Lounge</option>
+                </select>
               )}
 
               <div className="grid grid-cols-2 gap-4">

@@ -142,7 +142,7 @@ export default function Noir() {
         </motion.h2>
 
         <motion.button
-          onClick={() => navigate("/contact")}
+          onClick={() => navigate("/reservations")}
           whileHover={{ scale: 1.12 }}
           whileTap={{ scale: 0.95 }}
           className="mt-6 px-10 py-4 border border-teal-300 rounded-full text-white backdrop-blur-md hover:bg-teal-300/10 transition cursor-pointer"

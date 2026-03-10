@@ -51,7 +51,7 @@ export default function Dashboard() {
       <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
 
       {/* STAT CARDS */}
-      <div className="grid md:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
         {cards.map((card) => (
           <div
             key={card.label}
@@ -69,7 +69,7 @@ export default function Dashboard() {
       <div className="glass rounded-xl p-6 border border-white/10">
         <h2 className="text-2xl font-semibold mb-4">Recent VIP Requests</h2>
 
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto"><table className="w-full text-sm min-w-125">
           <thead>
             <tr className="text-left text-gray-400 border-b border-white/10">
               <th className="py-2">Name</th>
@@ -109,7 +109,7 @@ export default function Dashboard() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
   );

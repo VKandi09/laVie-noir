@@ -1,13 +1,25 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [locationsOpen, setLocationsOpen] = useState(false);
   const [reservationsOpen, setReservationsOpen] = useState(false);
+
+  const goToEvents = () => {
+    const scroll = () =>
+      document.querySelector(".events")?.scrollIntoView({ behavior: "smooth" });
+    if (location.pathname === "/") {
+      scroll();
+    } else {
+      navigate("/");
+      setTimeout(scroll, 600);
+    }
+  };
 
   // Lock scroll when mobile menu is open
   useEffect(() => {
@@ -68,14 +80,7 @@ export default function Navbar() {
 
         {/* Events */}
         <li
-          onClick={() => {
-            navigate("/");
-            setTimeout(() => {
-              document
-                .querySelector(".events")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }, 200);
-          }}
+          onClick={goToEvents}
           className="relative cursor-pointer nav-item"
         >
           Events
@@ -141,126 +146,114 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ y: -50, opacity: 0 }}
+            initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -50, opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="fixed inset-0 h-120 bg-black text-white flex flex-col items-center justify-center gap-6 md:hidden z-100"
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-0 left-0 right-0 bg-zinc-950 border-b border-white/10 text-white flex flex-col md:hidden z-100 pt-20 pb-6 shadow-2xl"
           >
             {/* Close Button */}
             <button
               onClick={() => setMenuOpen(false)}
-              className="absolute top-6 right-6 text-white text-2xl font-bold"
+              className="absolute top-5 right-5 text-gray-400 hover:text-white transition cursor-pointer"
             >
-              ✕
+              <X size={22} />
             </button>
 
             {/* Locations Dropdown */}
-            <div className="relative w-full flex flex-col items-center">
+            <div className="flex flex-col">
               <button
                 onClick={() => setLocationsOpen(!locationsOpen)}
-                className="text-lg font-semibold px-6 py-3 border border-white/20 rounded-full hover:bg-white/10 transition cursor-pointer"
+                className="flex items-center justify-between w-full px-6 py-4 text-base font-semibold text-gray-200 hover:bg-white/5 transition cursor-pointer"
               >
                 Locations
+                <ChevronDown
+                  size={16}
+                  className={`text-gray-400 transition-transform duration-300 ${locationsOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               <AnimatePresence>
                 {locationsOpen && (
-                  <motion.ul
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.25 }}
-                    className="mt-3 bg-black/95 border border-white/10 rounded-xl overflow-hidden w-40 flex flex-col items-center"
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden bg-zinc-900"
                   >
-                    <li
-                      onClick={() => {
-                        navigate("/la-vie");
-                        setMenuOpen(false);
-                        setLocationsOpen(false);
-                      }}
-                      className="px-4 py-3 hover:bg-purple-500/20 text-white w-full text-center cursor-pointer transition"
+                    <button
+                      onClick={() => { navigate("/la-vie"); setMenuOpen(false); setLocationsOpen(false); }}
+                      className="flex items-center gap-3 w-full px-8 py-3 text-sm text-gray-300 hover:text-white hover:bg-purple-500/10 transition cursor-pointer border-l-2 border-purple-500/50"
                     >
-                      La Vie
-                    </li>
-                    <li
-                      onClick={() => {
-                        navigate("/noir");
-                        setMenuOpen(false);
-                        setLocationsOpen(false);
-                      }}
-                      className="px-4 py-3 hover:bg-teal-500/20 text-white w-full text-center cursor-pointer transition"
+                      La Vie Night Club
+                    </button>
+                    <button
+                      onClick={() => { navigate("/noir"); setMenuOpen(false); setLocationsOpen(false); }}
+                      className="flex items-center gap-3 w-full px-8 py-3 text-sm text-gray-300 hover:text-white hover:bg-teal-500/10 transition cursor-pointer border-l-2 border-teal-500/50"
                     >
-                      Noir
-                    </li>
-                  </motion.ul>
+                      Noir Bar & Lounge
+                    </button>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
+            <div className="h-px bg-white/5 mx-6" />
+
             {/* Reservations Dropdown */}
-            <div className="relative w-full flex flex-col items-center">
+            <div className="flex flex-col">
               <button
                 onClick={() => setReservationsOpen(!reservationsOpen)}
-                className="text-lg font-semibold px-6 py-3 border border-white/20 rounded-full hover:bg-white/10 transition cursor-pointer"
+                className="flex items-center justify-between w-full px-6 py-4 text-base font-semibold text-gray-200 hover:bg-white/5 transition cursor-pointer"
               >
                 Reservations
+                <ChevronDown
+                  size={16}
+                  className={`text-gray-400 transition-transform duration-300 ${reservationsOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               <AnimatePresence>
                 {reservationsOpen && (
-                  <motion.ul
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.25 }}
-                    className="mt-3 bg-black/95 border border-white/10 rounded-xl overflow-hidden w-48 flex flex-col items-center"
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden bg-zinc-900"
                   >
-                    <li
-                      onClick={() => {
-                        navigate("/reservations");
-                        setMenuOpen(false);
-                        setReservationsOpen(false);
-                      }}
-                      className="px-4 py-3 hover:bg-purple-500/20 text-white w-full text-center cursor-pointer transition"
+                    <button
+                      onClick={() => { navigate("/reservations"); setMenuOpen(false); setReservationsOpen(false); }}
+                      className="flex items-center gap-3 w-full px-8 py-3 text-sm text-gray-300 hover:text-white hover:bg-purple-500/10 transition cursor-pointer border-l-2 border-purple-500/50"
                     >
                       Table Reservation
-                    </li>
-                    <li
-                      onClick={() => {
-                        navigate("/vip");
-                        setMenuOpen(false);
-                        setReservationsOpen(false);
-                      }}
-                      className="px-4 py-3 hover:bg-teal-500/20 text-white w-full text-center cursor-pointer transition"
+                    </button>
+                    <button
+                      onClick={() => { navigate("/vip"); setMenuOpen(false); setReservationsOpen(false); }}
+                      className="flex items-center gap-3 w-full px-8 py-3 text-sm text-gray-300 hover:text-white hover:bg-teal-500/10 transition cursor-pointer border-l-2 border-teal-500/50"
                     >
-                      VIP
-                    </li>
-                  </motion.ul>
+                      VIP Access
+                    </button>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* Other Menu Items */}
-            {["Events", "Gallery", "Contact"].map((item) => (
+            <div className="h-px bg-white/5 mx-6" />
+
+            {/* Flat Items */}
+            {[
+              { label: "Events", action: () => goToEvents() },
+              { label: "Gallery", action: () => navigate("/gallery") },
+              { label: "Contact", action: () => navigate("/contact") },
+            ].map(({ label, action }) => (
               <button
-                key={item}
-                onClick={() => {
-                  if (item === "Events") {
-                    navigate("/");
-                    setTimeout(() => {
-                      document
-                        .querySelector(".events")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }, 200);
-                  } else {
-                    navigate(`/${item.toLowerCase()}`);
-                  }
-                  setMenuOpen(false);
-                }}
-                className="text-lg font-medium px-6 py-3 rounded-full hover:bg-white/10 transition cursor-pointer"
+                key={label}
+                onClick={() => { action(); setMenuOpen(false); }}
+                className="w-full px-6 py-4 text-base font-semibold text-gray-200 hover:bg-white/5 hover:text-white text-left transition cursor-pointer"
               >
-                {item}
+                {label}
               </button>
             ))}
           </motion.div>

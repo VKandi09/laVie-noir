@@ -49,7 +49,7 @@ export default function VIPReservation() {
       transition={{ duration: 0.6 }}
       className="min-h-screen pt-28 pb-20 px-4 md:px-12 bg-black flex items-center justify-center"
     >
-      <div className="max-w-5xl w-full glass rounded-3xl p-8 md:p-16 relative overflow-hidden">
+      <div className="max-w-5xl w-full glass rounded-3xl p-5 sm:p-8 md:p-12 lg:p-16 relative overflow-hidden">
         {/* Ambient Glow */}
         <div className="absolute inset-0 bg-linear-to-br from-purple-600/20 via-transparent to-teal-500/20 blur-3xl" />
 
@@ -58,7 +58,7 @@ export default function VIPReservation() {
           <motion.h1
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-4xl md:text-6xl font-extrabold tracking-widest text-neon text-center"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-widest text-neon text-center"
           >
             VIP Reservations
           </motion.h1>
@@ -73,7 +73,7 @@ export default function VIPReservation() {
           {!submitted ? (
             <form
               onSubmit={handleSubmit}
-              className="mt-14 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+              className="mt-10 grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 max-w-4xl mx-auto"
             >
               {/* First Name */}
               <input

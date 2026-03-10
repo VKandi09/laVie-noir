@@ -26,6 +26,7 @@ export default function Reservations() {
     lastName: "",
     email: "",
     phone: "",
+    location: "",
     reservationDate: null,
     reservationTime: "",
     partySize: "2",
@@ -38,6 +39,11 @@ export default function Reservations() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.location) {
+      alert("Please select a location");
+      return;
+    }
 
     if (!form.reservationDate || !form.reservationTime) {
       alert("Please select date and time");
@@ -75,7 +81,7 @@ export default function Reservations() {
       transition={{ duration: 0.6 }}
       className="min-h-screen pt-28 pb-20 px-4 md:px-12 bg-black"
     >
-      <div className="max-w-5xl w-full glass rounded-3xl p-8 md:p-16 relative overflow-hidden mx-auto">
+      <div className="max-w-5xl w-full glass rounded-3xl p-5 sm:p-8 md:p-12 lg:p-16 relative overflow-hidden mx-auto">
         {/* Ambient Glow */}
         <div className="absolute inset-0 bg-linear-to-br from-purple-600/20 via-transparent to-teal-500/20 blur-3xl" />
 
@@ -84,7 +90,7 @@ export default function Reservations() {
           <motion.h1
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-4xl md:text-6xl font-extrabold tracking-widest text-neon text-center"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-widest text-neon text-center"
           >
             GENERAL RESERVATIONS
           </motion.h1>
@@ -99,7 +105,7 @@ export default function Reservations() {
           {!success ? (
             <form
               onSubmit={handleSubmit}
-              className="mt-14 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+              className="mt-10 grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 max-w-4xl mx-auto"
             >
               {/* First Name */}
               <input
@@ -142,6 +148,17 @@ export default function Reservations() {
                 onChange={handleChange}
                 className="glass px-4 md:px-6 py-4 rounded-xl bg-transparent outline-none text-white placeholder-gray-400"
               />
+
+              {/* Location */}
+              <div className="md:col-span-2">
+                <FormDropdown
+                  label="Preferred Location"
+                  placeholder="Select Location"
+                  value={form.location}
+                  onChange={(value) => setForm({ ...form, location: value })}
+                  options={["La Vie Night Club", "Noir Bar & Lounge"]}
+                />
+              </div>
 
               {/* Animated Calendar */}
               <FormCalendar

@@ -34,7 +34,7 @@ export default function Hero() {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-5xl md:text-6xl font-extrabold tracking-widest text-white"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-widest text-white"
           >
             LA VIE
           </motion.h2>
@@ -88,7 +88,7 @@ export default function Hero() {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-5xl md:text-6xl font-extrabold tracking-widest text-white"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-widest text-white"
           >
             NOIR
           </motion.h2>
