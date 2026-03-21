@@ -21,6 +21,7 @@ import ProtectedRoute from "./admin/ProtectedRoute";
 import Dashboard from "./admin/Dashboard";
 import VIPTable from "./admin/VIPTable";
 import ReservationsTable from "./admin/ReservationsTable";
+import AdminSettings from "./admin/AdminSettings";
 
 export default function App() {
   const location = useLocation();
@@ -81,6 +82,7 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="vip" element={<VIPTable />} />
             <Route path="reservations" element={<ReservationsTable />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Routes>
       </AnimatePresence>

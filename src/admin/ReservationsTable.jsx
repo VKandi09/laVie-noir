@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { adminFetch } from "../utils/adminFetch.js";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2, X, Download } from "lucide-react";
 
 const TIME_SLOTS = [
   "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM",
   "12:00 AM", "1:00 AM", "2:00 AM",
 ];
+
+const LOCATIONS = ["La Vie Night Club", "Noir Bar & Lounge"];
+const PAGE_SIZE = 10;
 
 const statusColor = (status) =>
   status === "confirmed"
@@ -18,9 +21,8 @@ const formatDate = (dt) =>
   new Date(dt).toLocaleString("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
-});
+  });
 
-/** Convert a stored Date to YYYY-MM-DD for a date input **/
 const toDateInput = (dt) => {
   const d = new Date(dt);
   const yyyy = d.getFullYear();
@@ -29,7 +31,6 @@ const toDateInput = (dt) => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-/** Convert a stored Date to the matching time-slot string */
 const toTimeSlot = (dt) => {
   const d = new Date(dt);
   const h = d.getHours();
@@ -37,6 +38,34 @@ const toTimeSlot = (dt) => {
   const period = h >= 12 ? "PM" : "AM";
   const h12 = h % 12 || 12;
   return `${h12}:${m} ${period}`;
+};
+
+const exportCSV = (data) => {
+  const headers = [
+    "First Name", "Last Name", "Email", "Phone", "Location",
+    "Date & Time", "Party Size", "Occasion", "Notes", "Status", "Submitted",
+  ];
+  const rows = data.map((r) => [
+    r.firstName,
+    r.lastName,
+    r.email,
+    r.phone,
+    r.location || "",
+    formatDate(r.reservationDateTime),
+    r.partySize,
+    (r.occasion || "").replace(/,/g, ";"),
+    (r.notes || "").replace(/,/g, ";"),
+    r.status,
+    new Date(r.createdAt).toLocaleDateString(),
+  ]);
+  const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "reservations.csv";
+  a.click();
+  URL.revokeObjectURL(url);
 };
 
 export default function ReservationsTable() {
@@ -48,12 +77,33 @@ export default function ReservationsTable() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // Filters & pagination
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterLocation, setFilterLocation] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     adminFetch(`${import.meta.env.VITE_API_BASE_URL}/api/reservations`)
       .then((res) => res.json())
       .then((data) => setReservations(data || []))
       .catch();
   }, []);
+
+  // Reset to page 1 when filters change
+  useEffect(() => { setCurrentPage(1); }, [search, filterStatus, filterLocation]);
+
+  const filtered = reservations.filter((r) => {
+    const matchSearch =
+      !search ||
+      `${r.firstName} ${r.lastName} ${r.email}`.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === "all" || r.status === filterStatus;
+    const matchLocation = filterLocation === "all" || r.location === filterLocation;
+    return matchSearch && matchStatus && matchLocation;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const updateStatus = async (id, status) => {
     setLoadingId(id);
@@ -152,76 +202,145 @@ export default function ReservationsTable() {
   const inputClass =
     "w-full bg-zinc-800 border border-white/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/50";
 
+  const selectClass =
+    "bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none";
+
   return (
     <div className="mt-16">
-      <h1 className="text-3xl font-bold mb-8">Manage General Reservations</h1>
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h1 className="text-3xl font-bold">Manage General Reservations</h1>
+        <button
+          onClick={() => exportCSV(filtered)}
+          className="flex items-center gap-2 text-sm border border-white/20 px-4 py-2 rounded-lg hover:bg-white/5 transition cursor-pointer"
+        >
+          <Download size={15} /> Export CSV
+        </button>
+      </div>
 
-      {reservations.length === 0 ? (
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-5">
+        <input
+          type="text"
+          placeholder="Search name or email…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/40 w-56"
+        />
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className={selectClass}>
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="declined">Declined</option>
+        </select>
+        <select value={filterLocation} onChange={(e) => setFilterLocation(e.target.value)} className={selectClass}>
+          <option value="all">All Locations</option>
+          {LOCATIONS.map((l) => <option key={l}>{l}</option>)}
+        </select>
+        {(search || filterStatus !== "all" || filterLocation !== "all") && (
+          <button
+            onClick={() => { setSearch(""); setFilterStatus("all"); setFilterLocation("all"); }}
+            className="text-sm text-gray-400 hover:text-white transition cursor-pointer"
+          >
+            Clear filters
+          </button>
+        )}
+      </div>
+
+      {filtered.length === 0 ? (
         <p className="text-gray-400">No reservations found.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-white/10 rounded-xl overflow-hidden">
-            <thead>
-              <tr className="text-left bg-zinc-900 text-sm uppercase tracking-wider">
-                <th className="p-4">Guest</th>
-                <th className="p-4">Email</th>
-                <th className="p-4">Location</th>
-                <th className="p-4">Date & Time</th>
-                <th className="p-4">Party</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reservations.map((r) => (
-                <tr
-                  key={r._id}
-                  className="border-t border-white/10 hover:bg-white/5 transition"
-                >
-                  <td className="p-4 font-medium">
-                    {r.firstName} {r.lastName}
-                  </td>
-                  <td className="p-4 text-gray-300">{r.email}</td>
-                  <td className="p-4 text-gray-300">{r.location || "—"}</td>
-                  <td className="p-4">{formatDate(r.reservationDateTime)}</td>
-                  <td className="p-4">{r.partySize}</td>
-                  <td className="p-4">
-                    <select
-                      disabled={loadingId === r._id}
-                      value={r.status}
-                      onChange={(e) => updateStatus(r._id, e.target.value)}
-                      className={`bg-black border border-white/20 rounded-lg px-3 py-1 text-sm ${
-                        loadingId === r._id ? "opacity-50 cursor-not-allowed" : ""
-                      } ${statusColor(r.status)}`}
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="declined">Declined</option>
-                    </select>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => openEdit(r)}
-                        title="Edit"
-                        className="p-1.5 rounded hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer"
-                      >
-                        <Pencil size={15} />
-                      </button>
-                      <button
-                        onClick={() => setDeleteTarget(r)}
-                        title="Delete"
-                        className="p-1.5 rounded hover:bg-red-400/10 text-gray-400 hover:text-red-400 transition cursor-pointer"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
+        <>
+          <div className="overflow-x-auto">
+            <table className="w-full border border-white/10 rounded-xl overflow-hidden">
+              <thead>
+                <tr className="text-left bg-zinc-900 text-sm uppercase tracking-wider">
+                  <th className="p-4">Guest</th>
+                  <th className="p-4">Email</th>
+                  <th className="p-4">Location</th>
+                  <th className="p-4">Date & Time</th>
+                  <th className="p-4">Party</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Submitted</th>
+                  <th className="p-4">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {paginated.map((r) => (
+                  <tr
+                    key={r._id}
+                    className="border-t border-white/10 hover:bg-white/5 transition"
+                  >
+                    <td className="p-4 font-medium">
+                      {r.firstName} {r.lastName}
+                    </td>
+                    <td className="p-4 text-gray-300">{r.email}</td>
+                    <td className="p-4 text-gray-300">{r.location || "—"}</td>
+                    <td className="p-4">{formatDate(r.reservationDateTime)}</td>
+                    <td className="p-4">{r.partySize}</td>
+                    <td className="p-4">
+                      <select
+                        disabled={loadingId === r._id}
+                        value={r.status}
+                        onChange={(e) => updateStatus(r._id, e.target.value)}
+                        className={`bg-black border border-white/20 rounded-lg px-3 py-1 text-sm ${
+                          loadingId === r._id ? "opacity-50 cursor-not-allowed" : ""
+                        } ${statusColor(r.status)}`}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="declined">Declined</option>
+                      </select>
+                    </td>
+                    <td className="p-4 text-gray-400 text-sm">
+                      {new Date(r.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => openEdit(r)}
+                          title="Edit"
+                          className="p-1.5 rounded hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(r)}
+                          title="Delete"
+                          className="p-1.5 rounded hover:bg-red-400/10 text-gray-400 hover:text-red-400 transition cursor-pointer"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between mt-4 text-sm text-gray-400">
+            <span>{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded border border-white/20 disabled:opacity-30 hover:bg-white/10 transition cursor-pointer"
+              >
+                ←
+              </button>
+              <span>Page {currentPage} of {totalPages}</span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded border border-white/20 disabled:opacity-30 hover:bg-white/10 transition cursor-pointer"
+              >
+                →
+              </button>
+            </div>
+          </div>
+        </>
       )}
 
       {/* ── Edit Modal ── */}

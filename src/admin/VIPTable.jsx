@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { adminFetch } from "../utils/adminFetch.js";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2, X, Download } from "lucide-react";
 
 const VIP_LOCATIONS = ["La Vie Night Club", "Noir Bar & Lounge"];
 const VIP_INTERESTS = ["VIP Table", "Private Event"];
+const PAGE_SIZE = 10;
 
 const statusColor = (status) =>
   status === "confirmed"
@@ -23,6 +24,29 @@ const EMPTY_FORM = {
   status: "pending",
 };
 
+const exportCSV = (data) => {
+  const headers = ["First Name", "Last Name", "Email", "Phone", "Location", "Interest", "Message", "Status", "Date Submitted"];
+  const rows = data.map((v) => [
+    v.firstName,
+    v.lastName,
+    v.email,
+    v.phone || "",
+    v.location,
+    v.interest,
+    (v.message || "").replace(/,/g, ";"),
+    v.status,
+    new Date(v.createdAt).toLocaleDateString(),
+  ]);
+  const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "vip-requests.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
 export default function VIPTable() {
   const [vips, setVips] = useState([]);
   const [loadingId, setLoadingId] = useState(null);
@@ -32,12 +56,33 @@ export default function VIPTable() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // Filters & pagination
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterLocation, setFilterLocation] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     adminFetch(`${import.meta.env.VITE_API_BASE_URL}/api/vip/all`)
       .then((res) => res.json())
       .then((data) => setVips(data || []))
       .catch();
   }, []);
+
+  // Reset to page 1 when filters change
+  useEffect(() => { setCurrentPage(1); }, [search, filterStatus, filterLocation]);
+
+  const filtered = vips.filter((v) => {
+    const matchSearch =
+      !search ||
+      `${v.firstName} ${v.lastName} ${v.email}`.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === "all" || v.status === filterStatus;
+    const matchLocation = filterLocation === "all" || v.location === filterLocation;
+    return matchSearch && matchStatus && matchLocation;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const updateStatus = async (id, status) => {
     setLoadingId(id);
@@ -124,74 +169,143 @@ export default function VIPTable() {
   const inputClass =
     "w-full bg-zinc-800 border border-white/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/50";
 
+  const selectClass =
+    "bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none";
+
   return (
     <div className="mt-15">
-      <h1 className="text-3xl font-bold mb-6">Manage VIP Reservations</h1>
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h1 className="text-3xl font-bold">Manage VIP Reservations</h1>
+        <button
+          onClick={() => exportCSV(filtered)}
+          className="flex items-center gap-2 text-sm border border-white/20 px-4 py-2 rounded-lg hover:bg-white/5 transition cursor-pointer"
+        >
+          <Download size={15} /> Export CSV
+        </button>
+      </div>
 
-      {vips.length === 0 ? (
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-5">
+        <input
+          type="text"
+          placeholder="Search name or email…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/40 w-56"
+        />
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className={selectClass}>
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="declined">Declined</option>
+        </select>
+        <select value={filterLocation} onChange={(e) => setFilterLocation(e.target.value)} className={selectClass}>
+          <option value="all">All Locations</option>
+          {VIP_LOCATIONS.map((l) => <option key={l}>{l}</option>)}
+        </select>
+        {(search || filterStatus !== "all" || filterLocation !== "all") && (
+          <button
+            onClick={() => { setSearch(""); setFilterStatus("all"); setFilterLocation("all"); }}
+            className="text-sm text-gray-400 hover:text-white transition cursor-pointer"
+          >
+            Clear filters
+          </button>
+        )}
+      </div>
+
+      {filtered.length === 0 ? (
         <p className="text-gray-400">No VIP requests found.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-white/10">
-            <thead>
-              <tr className="text-left bg-zinc-800 text-sm uppercase tracking-wider">
-                <th className="p-3">Name</th>
-                <th className="p-3">Email</th>
-                <th className="p-3">Location</th>
-                <th className="p-3">Interest</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vips.map((vip) => (
-                <tr
-                  key={vip._id}
-                  className="border-t border-white/10 hover:bg-white/5 transition"
-                >
-                  <td className="p-3 font-medium">
-                    {vip.firstName} {vip.lastName}
-                  </td>
-                  <td className="p-3 text-gray-300">{vip.email}</td>
-                  <td className="p-3">{vip.location}</td>
-                  <td className="p-3">{vip.interest}</td>
-                  <td className="p-3">
-                    <select
-                      disabled={loadingId === vip._id}
-                      value={vip.status}
-                      onChange={(e) => updateStatus(vip._id, e.target.value)}
-                      className={`bg-black border border-white/20 rounded px-2 py-1 ${
-                        loadingId === vip._id ? "opacity-50 cursor-not-allowed" : ""
-                      } ${statusColor(vip.status)}`}
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="declined">Declined</option>
-                    </select>
-                  </td>
-                  <td className="p-3">
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => openEdit(vip)}
-                        title="Edit"
-                        className="p-1.5 rounded hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer"
-                      >
-                        <Pencil size={15} />
-                      </button>
-                      <button
-                        onClick={() => setDeleteTarget(vip)}
-                        title="Delete"
-                        className="p-1.5 rounded hover:bg-red-400/10 text-gray-400 hover:text-red-400 transition cursor-pointer"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
+        <>
+          <div className="overflow-x-auto">
+            <table className="w-full border border-white/10">
+              <thead>
+                <tr className="text-left bg-zinc-800 text-sm uppercase tracking-wider">
+                  <th className="p-3">Name</th>
+                  <th className="p-3">Email</th>
+                  <th className="p-3">Location</th>
+                  <th className="p-3">Interest</th>
+                  <th className="p-3">Status</th>
+                  <th className="p-3">Submitted</th>
+                  <th className="p-3">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {paginated.map((vip) => (
+                  <tr
+                    key={vip._id}
+                    className="border-t border-white/10 hover:bg-white/5 transition"
+                  >
+                    <td className="p-3 font-medium">
+                      {vip.firstName} {vip.lastName}
+                    </td>
+                    <td className="p-3 text-gray-300">{vip.email}</td>
+                    <td className="p-3">{vip.location}</td>
+                    <td className="p-3">{vip.interest}</td>
+                    <td className="p-3">
+                      <select
+                        disabled={loadingId === vip._id}
+                        value={vip.status}
+                        onChange={(e) => updateStatus(vip._id, e.target.value)}
+                        className={`bg-black border border-white/20 rounded px-2 py-1 ${
+                          loadingId === vip._id ? "opacity-50 cursor-not-allowed" : ""
+                        } ${statusColor(vip.status)}`}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="declined">Declined</option>
+                      </select>
+                    </td>
+                    <td className="p-3 text-gray-400 text-sm">
+                      {new Date(vip.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-3">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => openEdit(vip)}
+                          title="Edit"
+                          className="p-1.5 rounded hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(vip)}
+                          title="Delete"
+                          className="p-1.5 rounded hover:bg-red-400/10 text-gray-400 hover:text-red-400 transition cursor-pointer"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between mt-4 text-sm text-gray-400">
+            <span>{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded border border-white/20 disabled:opacity-30 hover:bg-white/10 transition cursor-pointer"
+              >
+                ←
+              </button>
+              <span>Page {currentPage} of {totalPages}</span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded border border-white/20 disabled:opacity-30 hover:bg-white/10 transition cursor-pointer"
+              >
+                →
+              </button>
+            </div>
+          </div>
+        </>
       )}
 
       {/* ── Edit Modal ── */}

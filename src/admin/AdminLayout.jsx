@@ -26,6 +26,13 @@ function NavLinks({ onClick, onLogout }) {
       >
         Manage General Reservations
       </Link>
+      <Link
+        to="/admin/settings"
+        onClick={onClick}
+        className="block hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon"
+      >
+        Settings
+      </Link>
       <button
         onClick={() => { onLogout(); onClick?.(); }}
         className="mt-6 block text-red-400 hover:bg-red-500/20 px-3 py-2 rounded hover:text-neon cursor-pointer w-full text-left"

@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AdminAuthContext } from "./AdminAuthContext";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useContext(AdminAuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -25,6 +27,7 @@ export default function AdminLogin() {
       if (!res.ok) throw new Error(data.message);
 
       localStorage.setItem("adminToken", data.token);
+      setIsAuthenticated(true);
       navigate("/admin");
     } catch (err) {
       setError(err.message);

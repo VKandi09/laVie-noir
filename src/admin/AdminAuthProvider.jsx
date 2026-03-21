@@ -46,7 +46,7 @@ export default function AdminAuthProvider({ children }) {
   }, [location.pathname, navigate]);
 
   return (
-    <AdminAuthContext.Provider value={{ isAuthenticated }}>
+    <AdminAuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
       {children}
     </AdminAuthContext.Provider>
   );
