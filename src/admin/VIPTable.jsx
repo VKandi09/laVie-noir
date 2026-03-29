@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { adminFetch } from "../utils/adminFetch.js";
 import { Pencil, Trash2, X, Download } from "lucide-react";
 
@@ -56,9 +57,10 @@ export default function VIPTable() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  // Filters & pagination
+  // Filters & pagination — read initial filter from dashboard card clicks
+  const location = useLocation();
   const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterStatus, setFilterStatus] = useState(location.state?.filterStatus || "all");
   const [filterLocation, setFilterLocation] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 

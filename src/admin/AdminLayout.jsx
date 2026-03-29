@@ -1,8 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { adminFetch } from "../utils/adminFetch.js";
 
-function NavLinks({ onClick, onLogout }) {
+function Badge({ count }) {
+  if (!count) return null;
+  return (
+    <span className="ml-auto bg-yellow-500/20 text-yellow-400 text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+      {count}
+    </span>
+  );
+}
+
+function NavLinks({ onClick, onLogout, pendingVIPs, pendingReservations }) {
   return (
     <>
       <Link
@@ -15,16 +25,18 @@ function NavLinks({ onClick, onLogout }) {
       <Link
         to="/admin/vip"
         onClick={onClick}
-        className="block hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon"
+        className="flex items-center hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon"
       >
         Manage VIP Reservations
+        <Badge count={pendingVIPs} />
       </Link>
       <Link
         to="/admin/reservations"
         onClick={onClick}
-        className="block hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon"
+        className="flex items-center hover:bg-gray-500/20 px-3 py-2 rounded hover:text-neon"
       >
         Manage General Reservations
+        <Badge count={pendingReservations} />
       </Link>
       <Link
         to="/admin/settings"
@@ -46,11 +58,32 @@ function NavLinks({ onClick, onLogout }) {
 export default function AdminLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [pendingVIPs, setPendingVIPs] = useState(0);
+  const [pendingReservations, setPendingReservations] = useState(0);
+
+  useEffect(() => {
+    const fetchPending = async () => {
+      try {
+        const [vipRes, resRes] = await Promise.all([
+          adminFetch(`${import.meta.env.VITE_API_BASE_URL}/api/vip/stats`),
+          adminFetch(`${import.meta.env.VITE_API_BASE_URL}/api/reservations/stats`),
+        ]);
+        const [vipData, resData] = await Promise.all([vipRes.json(), resRes.json()]);
+        setPendingVIPs(vipData.pendingVIPs || 0);
+        setPendingReservations(resData.pendingReservations || 0);
+      } catch {
+        // silently fail — badges are non-critical
+      }
+    };
+    fetchPending();
+  }, []);
 
   const logout = () => {
     localStorage.removeItem("adminToken");
     navigate("/admin/login");
   };
+
+  const navProps = { onLogout: logout, pendingVIPs, pendingReservations };
 
   return (
     <div className="min-h-screen flex bg-black text-white">
@@ -58,7 +91,7 @@ export default function AdminLayout() {
       <aside className="hidden md:block w-64 bg-zinc-900 p-6 shrink-0">
         <h2 className="text-xl font-bold text-neon mb-8 mt-15">Admin</h2>
         <nav className="space-y-4">
-          <NavLinks onLogout={logout} />
+          <NavLinks {...navProps} />
         </nav>
       </aside>
 
@@ -84,7 +117,7 @@ export default function AdminLayout() {
         </button>
         <h2 className="text-xl font-bold text-neon mb-8 mt-10">Admin</h2>
         <nav className="space-y-4">
-          <NavLinks onLogout={logout} onClick={() => setSidebarOpen(false)} />
+          <NavLinks {...navProps} onClick={() => setSidebarOpen(false)} />
         </nav>
       </aside>
 

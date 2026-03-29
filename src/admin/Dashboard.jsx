@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { adminFetch } from "../utils/adminFetch.js";
 
 const statusColor = (s) =>
@@ -33,17 +34,17 @@ export default function Dashboard() {
   }
 
   const vipCards = [
-    { label: "Total VIP Requests", value: vipStats.totalVIPs },
-    { label: "Pending", value: vipStats.pendingVIPs, color: "text-yellow-400" },
-    { label: "Confirmed", value: vipStats.confirmedVIPs, color: "text-green-400" },
-    { label: "Declined", value: vipStats.declinedVIPs, color: "text-red-400" },
+    { label: "Total VIP Requests", value: vipStats.totalVIPs, to: "/admin/vip" },
+    { label: "Pending", value: vipStats.pendingVIPs, color: "text-yellow-400", to: "/admin/vip", state: { filterStatus: "pending" } },
+    { label: "Confirmed", value: vipStats.confirmedVIPs, color: "text-green-400", to: "/admin/vip", state: { filterStatus: "confirmed" } },
+    { label: "Declined", value: vipStats.declinedVIPs, color: "text-red-400", to: "/admin/vip", state: { filterStatus: "declined" } },
   ];
 
   const resCards = [
-    { label: "Total Reservations", value: resStats.totalReservations },
-    { label: "Pending", value: resStats.pendingReservations, color: "text-yellow-400" },
-    { label: "Confirmed", value: resStats.confirmedReservations, color: "text-green-400" },
-    { label: "Declined", value: resStats.declinedReservations, color: "text-red-400" },
+    { label: "Total Reservations", value: resStats.totalReservations, to: "/admin/reservations" },
+    { label: "Pending", value: resStats.pendingReservations, color: "text-yellow-400", to: "/admin/reservations", state: { filterStatus: "pending" } },
+    { label: "Confirmed", value: resStats.confirmedReservations, color: "text-green-400", to: "/admin/reservations", state: { filterStatus: "confirmed" } },
+    { label: "Declined", value: resStats.declinedReservations, color: "text-red-400", to: "/admin/reservations", state: { filterStatus: "declined" } },
   ];
 
   return (
@@ -54,10 +55,15 @@ export default function Dashboard() {
       <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3">VIP Requests</p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
         {vipCards.map((card) => (
-          <div key={card.label} className="glass p-6 rounded-xl border border-white/10">
+          <Link
+            key={card.label}
+            to={card.to}
+            state={card.state}
+            className="glass p-6 rounded-xl border border-white/10 hover:border-white/30 hover:bg-white/5 transition cursor-pointer"
+          >
             <p className="text-gray-400 text-sm mb-2">{card.label}</p>
             <p className={`text-3xl font-bold ${card.color || "text-white"}`}>{card.value}</p>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -65,16 +71,24 @@ export default function Dashboard() {
       <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3">General Reservations</p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
         {resCards.map((card) => (
-          <div key={card.label} className="glass p-6 rounded-xl border border-white/10">
+          <Link
+            key={card.label}
+            to={card.to}
+            state={card.state}
+            className="glass p-6 rounded-xl border border-white/10 hover:border-white/30 hover:bg-white/5 transition cursor-pointer"
+          >
             <p className="text-gray-400 text-sm mb-2">{card.label}</p>
             <p className={`text-3xl font-bold ${card.color || "text-white"}`}>{card.value}</p>
-          </div>
+          </Link>
         ))}
       </div>
 
       {/* RECENT VIPS */}
       <div className="glass rounded-xl p-6 border border-white/10 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Recent VIP Requests</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Recent VIP Requests</h2>
+          <Link to="/admin/vip" className="text-sm text-gray-400 hover:text-white transition">View all →</Link>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-125">
             <thead>
@@ -105,7 +119,10 @@ export default function Dashboard() {
 
       {/* RECENT RESERVATIONS */}
       <div className="glass rounded-xl p-6 border border-white/10">
-        <h2 className="text-xl font-semibold mb-4">Recent General Reservations</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Recent General Reservations</h2>
+          <Link to="/admin/reservations" className="text-sm text-gray-400 hover:text-white transition">View all →</Link>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-125">
             <thead>
